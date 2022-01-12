@@ -113,6 +113,47 @@ public class DataSet {
 		return newData;
 	}
 	
+	public List<HashMap<String, String>> filterStartsWith(List<HashMap<String, String>> sampleData, String field, String arg){
+		List<HashMap<String, String>> newData = new LinkedList<HashMap<String, String>>();
+		
+		for(HashMap<String, String> entry : sampleData) {
+			if(entry.get(field).startsWith(arg))
+				newData.add(entry);
+		}
+		
+		return newData;
+	}
 	
+	public List<HashMap<String, String>> filterEndsWith(List<HashMap<String, String>> sampleData, String field, String arg){
+		List<HashMap<String, String>> newData = new LinkedList<HashMap<String, String>>();
+		
+		for(HashMap<String, String> entry : sampleData) {
+			if(entry.get(field).endsWith(arg))
+				newData.add(entry);
+		}
+		
+		return newData;
+	}
 	
+	public List<HashMap<String, String>> filterContains(List<HashMap<String, String>> sampleData, String field, String arg){
+		List<HashMap<String, String>> newData = new LinkedList<HashMap<String, String>>();
+		
+		for(HashMap<String, String> entry : sampleData) {
+			if(entry.get(field).contains(arg))
+				newData.add(entry);
+		}
+		
+		return newData;
+	}
+	
+	public List<HashMap<String, String>> filterIsNull(List<HashMap<String, String>> sampleData, String field){
+		List<HashMap<String, String>> newData = new LinkedList<HashMap<String, String>>();
+		
+		for(HashMap<String, String> entry : sampleData) {
+			if(entry.get(field).equals("null"))
+				newData.add(entry);
+		}
+		
+		return newData;
+	}
 }
