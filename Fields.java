@@ -1,22 +1,22 @@
 
 public interface Fields {
 	String ID = "Id";
-	String DATE = "Date";
-	String TIME = "Time";
-	String LOCATION = "Location";
-	String OPERATOR = "Operator";
-	String FLIGHT = "Flight";
-	String ROUTE = "Route";
-	String TYPE = "Type";
-	String REGISTRATION = "Registration";
-	String CN_IN = "cn.In";
-	String ABOARD = "Aboard";
-	String FATALITIES = "Fatalities";
-	String GROUND = "Ground";
-	String SURVIVORS = "Survivors";
-	String SURVIVAL_RATE = "SurvivalRate";
-	String SUMMARY = "Summary";
-	String CLUST_ID = "ClustID";
+	String DATE = "date";
+	String TIME = "time";
+	String LOCATION = "location";
+	String OPERATOR = "operator";
+	String FLIGHT = "flight";
+	String ROUTE = "route";
+	String TYPE = "type";
+	String REGISTRATION = "registration";
+	String CN_IN = "cn.in";
+	String ABOARD = "aboard";
+	String FATALITIES = "fatalities";
+	String GROUND = "ground";
+	String SURVIVORS = "survivors";
+	String SURVIVAL_RATE = "survivalRate";
+	String SUMMARY = "summary";
+	String CLUST_ID = "clustID";
 	
 	//Flight..	Route	Type	Registration	cn.In	Aboard	Fatalities	Ground	Survivors	SurvivalRate	Summary	ClustID
 

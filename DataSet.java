@@ -2,10 +2,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 public class DataSet {
@@ -31,38 +32,52 @@ public class DataSet {
 		this.data.add(entry1);
 		this.data.add(entry2);
 	}
+//	String DATE = "date";
+//	String TIME = "time";
+//	String LOCATION = "location";
+//	String OPERATOR = "operator";
+//	String FLIGHT = "flight";
+//	String ROUTE = "route";
+//	String TYPE = "type";
+//	String REGISTRATION = "registration";
+//	String CN_IN = "cn.in";
+//	String ABOARD = "aboard";
+//	String FATALITIES = "fatalities";
+//	String GROUND = "ground";
+//	String SURVIVORS = "survivors";
+//	String SURVIVAL_RATE = "survivalRate";
+//	String SUMMARY = "summary";
+//	String CLUST_ID = "clustID";
 	
 	public void loadFromFile(String path) throws IOException {
 		
 		FileReader fr = new FileReader(path);
 		BufferedReader br = new BufferedReader(fr);
 		
-		String firstLine = br.readLine();
-		
-		StringTokenizer st = new StringTokenizer(firstLine, ",");
-		List<String> keys = new ArrayList<String>();
+		String line = br.readLine();
 		
 		
-		while(st.hasMoreTokens())
-			keys.add(st.nextToken());
-		
-		String line;
-		
-		while((line = br.readLine()) != null) {
-			System.out.println(line);
-			st = new StringTokenizer(line, ",");
-			System.out.println(st.countTokens());
-			
-			HashMap<String, String> hm = new HashMap<String, String>();
-					
-			for(String key : keys)
-				hm.put(key, st.nextToken());
-			
-			this.data.add(hm);
-		}
-		
-
-		
+		while((line = br.readLine()) != null){
+			String[] fieldArray = line.split(",");
+			HashMap<String, String> entry = new HashMap<String, String>();
+			entry.put(Fields.DATE, fieldArray[0]);
+			entry.put(Fields.TIME, fieldArray[1]);
+			entry.put(Fields.LOCATION, fieldArray[2]);
+			entry.put(Fields.OPERATOR, fieldArray[3]);
+			entry.put(Fields.FLIGHT, fieldArray[4]);
+			entry.put(Fields.ROUTE, fieldArray[5]);
+			entry.put(Fields.TYPE, fieldArray[6]);
+			entry.put(Fields.REGISTRATION, fieldArray[7]);
+			entry.put(Fields.CN_IN, fieldArray[8]);
+			entry.put(Fields.ABOARD, fieldArray[9]);
+			entry.put(Fields.FATALITIES, fieldArray[10]);
+			entry.put(Fields.GROUND, fieldArray[11]);
+			entry.put(Fields.SURVIVORS, fieldArray[12]);
+			entry.put(Fields.SURVIVAL_RATE, fieldArray[13]);
+			entry.put(Fields.SUMMARY, fieldArray[14]);
+			entry.put(Fields.CLUST_ID, fieldArray[15]);
+			this.data.add(entry); 
+		}	
 	}
 	
 	public List<HashMap<String, String>> extractAll() {
@@ -156,7 +171,6 @@ public class DataSet {
 		
 		return newData;
 	}
-<<<<<<< HEAD
 	
 	public List<HashMap<String, String>> filterEqual(List<HashMap<String, String>> sampleData, String field, String arg){
 		List<HashMap<String, String>> newData = new LinkedList<HashMap<String, String>>();
@@ -263,23 +277,66 @@ public class DataSet {
 		return newData;
 	}
 	
-//	i. equal (eq)
-//	ii. greater than (gt)
-//	iii. less than (lt)
-//	iv. greater and equal to (ge)
-//	v. less and equal to (le)
-//	vi. between (bt)
-//	vii. null
+
 	
 	public List<HashMap<String, String>> filter(List<String[]> filters){
+		List<HashMap<String, String>> newData = new LinkedList<HashMap<String, String>>();
+		
+		for(HashMap<String, String > entry : data) 
+			newData.add(new HashMap<String, String>(entry));
+		
 		for(String[] ft : filters) {
 			String field = ft[0];
 			String predicate = ft[1];
 			String value = ft[2];
 			
+			switch(predicate) {
+			case Predicates.STARTS_WITH: newData = filterStartsWith(newData, field, value); break;
+			case Predicates.ENDS_WITH: newData = filterEndsWith(newData, field, value); break;
+			case Predicates.CONTAINS: newData = filterContains(newData, field, value); break;
+			case Predicates.EQUALS: newData = filterEqual(newData, field, value); break;
+			}
+			
+			if(field.equals(Fields.DATE)) {
+				switch(predicate) {
+				case Predicates.IN_YEAR: newData = filterDateYear(newData, Integer.valueOf(value)); break;
+				case Predicates.IN_MONTH: newData = filterDateYear(newData, Integer.valueOf(value)); break;
+				case Predicates.ON_DAY: newData = filterDateDay(newData, Integer.valueOf(value)); break;
+				}
+			}
+			
+			switch(predicate) {
+			case Predicates.GREATER_THAN: newData = filterGreater(newData, field, Integer.valueOf(value)); break;
+			case Predicates.GREATER_OR_EQUAL: newData = filterGreaterEqual(newData, field, Integer.valueOf(value)); break;
+			case Predicates.LESSER_THAN: newData = filterLesser(newData, field, Integer.valueOf(value)); break;
+			case Predicates.LESSER_OR_EQUAL: newData = filterLesserEqual(newData, field, Integer.valueOf(value)); break;
+			}
+			
+			
 		}
+		
+		return newData;
+		
+	}
+	
+	public void sortAscending(String field) {
+		Collections.sort(data, new Comparator<HashMap<String, String>>(){ 
+	        public int compare(HashMap<String, String> one, HashMap<String, String> two) { 
+	            return one.get(field).compareTo(two.get(field));
+	        } 
+		});
+	}
+	
+	public void sortDescending(String field) {
+		Collections.sort(data, new Comparator<HashMap<String, String>>()
+		{ public int compare(HashMap<String, String> one, HashMap<String, String> two) 
+		{ String s1 = one.get(field); 
+		String s2 = two.get(field); 
+		if(s1.equals(s2)) 
+			return 0; 
+		if(s1.compareTo(s2) > 0) 
+			return -1; return 1; } 
+		});
 	}
 
-=======
->>>>>>> 4fe06c5efaf9c59cfef2e84273718eba8eea2750
 }
